@@ -1,46 +1,69 @@
 // components/QuestionScreen.jsx
-import { useState } from 'react'
+import { useState } from "react";
 
-export default function QuestionScreen({ question, onSubmitAnswer, onContinue, feedback }) {
-  const [selectedAnswer, setSelectedAnswer] = useState('')
-  const [textAnswer, setTextAnswer] = useState('')
+export default function QuestionScreen({
+  question,
+  onSubmitAnswer,
+  onContinue,
+  feedback,
+  currentLevel,
+}) {
+  const [selectedAnswer, setSelectedAnswer] = useState("");
+  const [textAnswer, setTextAnswer] = useState("");
 
   const handleSubmit = () => {
-    let isCorrect = false
+    let isCorrect = false;
     switch (question.type) {
-      case 'multiple-choice':
-      case 'true-false':
-        isCorrect = selectedAnswer === question.correctAnswer
-        break
-      case 'text-input':
-        isCorrect = textAnswer.trim().toLowerCase() === question.correctAnswer.toLowerCase().trim()
-        break
+      case "multiple-choice":
+      case "true-false":
+        isCorrect = selectedAnswer === question.correctAnswer;
+        break;
+      case "text-input":
+        isCorrect =
+          textAnswer.trim().toLowerCase() ===
+          question.correctAnswer.toLowerCase().trim();
+        break;
       default:
-        isCorrect = false
+        isCorrect = false;
     }
-    onSubmitAnswer(isCorrect, question.correctAnswer)
-  }
+    onSubmitAnswer(isCorrect, question.correctAnswer);
+  };
 
   if (feedback) {
     return (
-      <div className={`feedback ${feedback.isCorrect ? 'correct' : 'incorrect'}`}>
-        <h3>{feedback.isCorrect ? 'Correct! 🎉' : 'Incorrect 😞'}</h3>
+      <div
+        className={`feedback ${feedback.isCorrect ? "correct" : "incorrect"}`}
+      >
+        <h3>{feedback.isCorrect ? "Correct! 🎉" : "Incorrect 😞"}</h3>
         <p>Correct answer: {feedback.correctAnswer}</p>
         <button onClick={onContinue}>Continue</button>
       </div>
-    )
+    );
   }
 
   return (
     <div className="question-screen">
       <div className="question-header">
         <h2>Question {question.type}</h2>
-        <p>Level: {question.level}</p>
+        <p
+          style={{
+            backgroundColor: "#646cff",
+            color: "#fff",
+            padding: "0.5rem ",
+            borderRadius: "15px",
+            fontWeight: "bold",
+            display: "inline-block",
+            fontSize: "1.2rem",
+            margin: "4px 0",
+          }}
+        >
+          Level: {currentLevel}
+        </p>
       </div>
-      
+
       <h3 className="question-text">{question.question}</h3>
 
-      {question.type === 'multiple-choice' && (
+      {question.type === "multiple-choice" && (
         <div className="options">
           {question.options.map((option, index) => (
             <label key={index} className="option">
@@ -57,14 +80,14 @@ export default function QuestionScreen({ question, onSubmitAnswer, onContinue, f
         </div>
       )}
 
-      {question.type === 'true-false' && (
+      {question.type === "true-false" && (
         <div className="options">
           <label className="option">
             <input
               type="radio"
               name="answer"
               value="true"
-              checked={selectedAnswer === 'true'}
+              checked={selectedAnswer === "true"}
               onChange={(e) => setSelectedAnswer(e.target.value)}
             />
             <span>True</span>
@@ -74,7 +97,7 @@ export default function QuestionScreen({ question, onSubmitAnswer, onContinue, f
               type="radio"
               name="answer"
               value="false"
-              checked={selectedAnswer === 'false'}
+              checked={selectedAnswer === "false"}
               onChange={(e) => setSelectedAnswer(e.target.value)}
             />
             <span>False</span>
@@ -82,7 +105,7 @@ export default function QuestionScreen({ question, onSubmitAnswer, onContinue, f
         </div>
       )}
 
-      {question.type === 'text-input' && (
+      {question.type === "text-input" && (
         <input
           type="text"
           value={textAnswer}
@@ -91,15 +114,15 @@ export default function QuestionScreen({ question, onSubmitAnswer, onContinue, f
         />
       )}
 
-      <button 
+      <button
         onClick={handleSubmit}
         disabled={
-          (question.type !== 'text-input' && !selectedAnswer) ||
-          (question.type === 'text-input' && !textAnswer.trim())
+          (question.type !== "text-input" && !selectedAnswer) ||
+          (question.type === "text-input" && !textAnswer.trim())
         }
       >
         Submit Answer
       </button>
     </div>
-  )
+  );
 }
