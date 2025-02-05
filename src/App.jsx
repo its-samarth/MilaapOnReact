@@ -6,6 +6,7 @@ import QuestionScreen from './components/QuestionScreen'
 import LevelTransition from './components/LevelTransition'
 import EndScreen from './components/EndScreen'
 import './App.css'
+import ScoreCounter from './components/ScoreCounter'
 
 function App() {
   const [gameState, setGameState] = useState('start')
@@ -91,6 +92,8 @@ function App() {
 
   return (
     <div className="app">
+       {gameState !== 'start' && <ScoreCounter score={score} />}
+      
       {gameState === 'start' && <StartScreen onStart={handleStart} />}
       
       {gameState === 'playing' && (

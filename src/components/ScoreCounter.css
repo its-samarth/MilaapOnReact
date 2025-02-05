@@ -1,0 +1,28 @@
+/* Score Counter Styles */
+.score-counter-container {
+    position: fixed; /* Changed from absolute to fixed */
+    top: 20px;
+    right: 20px;
+    z-index: 10; /* Ensure it's above other elements */
+  }
+  
+  .score-counter {
+    background-color: rgba(100, 108, 255, 0.2);
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-weight: bold;
+    color: #646cff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  
+  @media (max-width: 600px) {
+    .score-counter-container {
+      top: 10px;
+      right: 10px;
+    }
+  
+    .score-counter {
+      padding: 8px 12px;
+      font-size: 0.9rem;
+    }
+  }
