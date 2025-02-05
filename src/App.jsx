@@ -96,6 +96,7 @@ function App() {
       {gameState === 'playing' && (
         <QuestionScreen
           question={questions[currentLevel][currentQuestionIndex]}
+          currentLevel={currentLevel}
           onSubmitAnswer={handleAnswerSubmit}
           onContinue={handleContinue}
           feedback={currentFeedback}
