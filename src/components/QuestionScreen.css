@@ -27,7 +27,7 @@
   .timer-bar {
     flex-grow: 1;
     height: 8px;
-    background-color: #283593; /* Slightly lighter navy */
+    background-color: #141416; /* Slightly lighter navy */
     border-radius: 4px;
     overflow: hidden;
   }
@@ -61,7 +61,7 @@
     font-weight: bold;
     font-size: 1.1rem;
     white-space: nowrap;
-    border: 1px solid #4fc3f7; /* Light blue border */
+    border: 1px solid #090a0a; /* Light blue border */
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   }
   .submit-button {
