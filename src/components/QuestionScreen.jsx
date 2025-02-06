@@ -65,6 +65,7 @@ export default function QuestionScreen({
 
   // Reset answers when question changes
   useEffect(() => {
+    setTimeLeft(30);
     setSelectedAnswer("");
     setTextAnswer("");
   }, [question]);
