@@ -13,9 +13,10 @@
 
 /* Container */
 #root {
-  max-width: 1280px;
+  width: 70%; /* Set to 70% for a balanced layout */
+  max-width: 1280px; /* Maintain a max-width for large screens */
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1rem; /* Adjust padding for better spacing */
   text-align: center;
 }
 
@@ -63,7 +64,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
+  padding: 1rem; /* Consistent padding */
+  width: 100%; /* Ensure full width */
 }
 
 .start-screen {
@@ -219,9 +221,22 @@ button:disabled {
   margin-top: 1rem;
 }
 
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  #root {
+    width: 90%; /* Increase width for smaller screens */
+    padding: 1rem; /* Adjust padding */
+  }
+}
+
 @media (max-width: 600px) {
+  #root {
+    width: 100%; /* Full width for mobile devices */
+    padding: 0.5rem; /* Reduce padding for small screens */
+  }
+
   .app {
-    padding: 1rem;
+    padding: 0.5rem; /* Consistent padding */
   }
 
   .question-screen,
@@ -233,6 +248,7 @@ button:disabled {
   }
 
   .button-group {
-    flex-direction: column;
+    flex-direction: column; /* Stack buttons vertically */
+    gap: 10px; /* Adjust gap for better spacing */
   }
 }
