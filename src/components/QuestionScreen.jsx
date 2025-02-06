@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./QuestionScreen.css";
+
 export default function QuestionScreen({
   question,
   onSubmitAnswer,
@@ -10,65 +11,67 @@ export default function QuestionScreen({
   const [selectedAnswer, setSelectedAnswer] = useState("");
   const [textAnswer, setTextAnswer] = useState("");
   const [timeLeft, setTimeLeft] = useState(30);
-  
+  const currentAnswerRef = useRef("");
 
+  // Timer effect
   useEffect(() => {
     if (feedback) return;
-  
+
     const timer = setInterval(() => {
       setTimeLeft((prevTime) => {
         if (prevTime <= 1) {
           clearInterval(timer);
-          // Capture current answer state immediately
-          const currentAnswer = question.type === "text-input" ? textAnswer : selectedAnswer;
-          setTimeout(() => {
-            handleSubmit(currentAnswer); // Pass the captured answer from the timer
-          }, 0);
+          handleSubmit(currentAnswerRef.current); // Use the current answer from ref
           return 0;
         }
         return prevTime - 1;
       });
     }, 1000);
-  
+
     return () => clearInterval(timer);
-  }, [feedback, question, textAnswer, selectedAnswer]);
-  // Reset all states when question changes
+  }, [feedback, question]); // Only depend on feedback and question
+
+  // Current answer effect
   useEffect(() => {
-    setTimeLeft(20);
+    currentAnswerRef.current = question.type === "text-input" ? textAnswer : selectedAnswer;
+  }, [textAnswer, selectedAnswer, question.type]); // Update ref on answer change
+
+  const handleSubmit = (forcedAnswer = null) => {
+    let isCorrect = false;
+    const answer = forcedAnswer !== null ? forcedAnswer : currentAnswerRef.current;
+
+    console.log("Submitting answer:", {
+      givenAnswer: answer,
+      correctAnswer: question.correctAnswer,
+      questionType: question.type
+    });
+
+    switch (question.type) {
+      case "multiple-choice":
+      case "true-false":
+        isCorrect = String(answer).toLowerCase() === String(question.correctAnswer).toLowerCase();
+        break;
+      case "text-input":
+        const cleanAnswer = String(answer || "").trim().toLowerCase();
+        const cleanCorrectAnswer = String(question.correctAnswer || "").trim().toLowerCase();
+        isCorrect = cleanAnswer === cleanCorrectAnswer;
+        break;
+      default:
+        isCorrect = false;
+    }
+
+    onSubmitAnswer(isCorrect, question.correctAnswer);
+  };
+
+  // Reset answers when question changes
+  useEffect(() => {
     setSelectedAnswer("");
     setTextAnswer("");
-    }, [question]);
-
-    const handleSubmit = (forcedAnswer) => {
-      let isCorrect = false;
-      // Use forcedAnswer if provided (from timer), otherwise use current state
-      
-      const answer = forcedAnswer?.target?.value ?? forcedAnswer ?? (question.type === "text-input" ? textAnswer : selectedAnswer);  
-      console.log("Submitting answer:", {
-        givenAnswer: answer,
-        correctAnswer: question.correctAnswer,
-        questionType: question.type
-      });  
-      switch (question.type) {
-        case "multiple-choice":
-        case "true-false":
-          isCorrect = String(answer).toLowerCase() === String(question.correctAnswer).toLowerCase();
-          break;
-        case "text-input":
-          isCorrect = answer.trim().toLowerCase() === question.correctAnswer.toLowerCase().trim();
-          break;
-        default:
-          isCorrect = false;
-      }
-      onSubmitAnswer(isCorrect, question.correctAnswer);
-    };
-    
+  }, [question]);
 
   if (feedback) {
     return (
-      <div
-        className={`feedback ${feedback.isCorrect ? "correct" : "incorrect"}`}
-      >
+      <div className={`feedback ${feedback.isCorrect ? "correct" : "incorrect"}`}>
         <h3>{feedback.isCorrect ? "Correct! 🎉" : "Incorrect 😞"}</h3>
         <p>Correct answer: {feedback.correctAnswer}</p>
         <button onClick={onContinue}>Continue</button>
@@ -79,25 +82,25 @@ export default function QuestionScreen({
   return (
     <div className="question-screen">
       <div className="question-header">
-  <h2>Question {question.type}</h2>
-  <div className="timer-display">
-    <div className="timer-bar">
-      <div 
-        className="timer-progress"
-        style={{
-          width: `${(timeLeft / 30) * 100}%`,
-          backgroundColor: timeLeft <= 10 ? '#ff4444' : '#646cff'
-        }}
-      />
-    </div>
-    <span className={`timer-text ${timeLeft <= 10 ? 'warning' : ''}`}>
-      {timeLeft}s
-    </span>
-  </div>
-  <span className="level-badge">
-    Level: {currentLevel}
-  </span>
-</div>
+        <h2>Question {question.type}</h2>
+        <div className="timer-display">
+          <div className="timer-bar">
+            <div 
+              className="timer-progress"
+              style={{
+                width: `${(timeLeft / 30) * 100}%`,
+                backgroundColor: timeLeft <= 10 ? '#ff4444' : '#646cff'
+              }}
+            />
+          </div>
+          <span className={`timer-text ${timeLeft <= 10 ? 'warning' : ''}`}>
+            {timeLeft}s
+          </span>
+        </div>
+        <span className="level-badge">
+          Level: {currentLevel}
+        </span>
+      </div>
 
       <h3 className="question-text">{question.question}</h3>
 
@@ -154,7 +157,7 @@ export default function QuestionScreen({
       )}
 
       <button
-         onClick={() => handleSubmit()}
+        onClick={() => handleSubmit()}
         disabled={
           (question.type !== "text-input" && !selectedAnswer) ||
           (question.type === "text-input" && !textAnswer.trim())
