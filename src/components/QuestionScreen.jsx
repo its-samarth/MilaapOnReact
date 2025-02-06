@@ -158,6 +158,7 @@ export default function QuestionScreen({
       )}
 
       <button
+        className="submit-button"
         onClick={() => handleSubmit()}
         disabled={
           (question.type !== "text-input" && !selectedAnswer) ||
