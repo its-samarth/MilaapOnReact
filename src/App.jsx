@@ -92,7 +92,7 @@ function App() {
 
   return (
     <div className="app">
-       {gameState !== 'start' && <ScoreCounter score={score} />}
+       
       
       {gameState === 'start' && <StartScreen onStart={handleStart} />}
       
